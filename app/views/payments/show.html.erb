@@ -1,4 +1,8 @@
-<p id="notice"><%= notice %></p>
+<% if notice %>
+  <p id="notice"><%= notice %></p>
+<% end %>
+
+<h1>Payment Details</h1>
 
 <p>
   <strong>Number:</strong>
@@ -30,5 +34,4 @@
   <%= @payment.verification_value %>
 </p>
 
-<%= link_to 'Edit', edit_payment_path(@payment) %> |
-<%= link_to 'Back', payments_path %>
+<%= link_to 'Return', pay_path %>

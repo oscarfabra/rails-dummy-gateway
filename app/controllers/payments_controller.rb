@@ -5,6 +5,7 @@ class PaymentsController < ApplicationController
   # GET /payments.json
   def index
     @payments = Payment.all
+    redirect_to pay_path, notice: "Can't view all payments."
   end
 
   # GET /payments/1
@@ -20,7 +21,6 @@ class PaymentsController < ApplicationController
   # GET /payments/1/edit
   def edit
     redirect_to pay_path, notice: "Can't edit a payment that is already done."
-    return
   end
 
   # POST /payments
@@ -28,17 +28,12 @@ class PaymentsController < ApplicationController
   def create
     @payment = Payment.new(payment_params)
 
-    unless @payment.process
-      redirect_to pay_path, notice: 'Credit Card Validation Failed.'
-      return
-    end
-
     respond_to do |format|
-      if @payment.save
+      if @payment.errors.empty? and @payment.save and @payment.process(params[:payment][:amount])
         format.html { redirect_to @payment, notice: 'Payment was successfully done.' }
         format.json { render :show, status: :created, location: @payment }
       else
-        format.html { render :new }
+        format.html { redirect_to pay_path, notice: 'Credit card validation failed.'}
         format.json { render json: @payment.errors, status: :unprocessable_entity }
       end
     end
@@ -48,14 +43,12 @@ class PaymentsController < ApplicationController
   # PATCH/PUT /payments/1.json
   def update
     redirect_to pay_path, notice: "Can't update a payment."
-    return
   end
 
   # DELETE /payments/1
   # DELETE /payments/1.json
   def destroy
     redirect_to pay_path, notice: "Can't destroy a payment."
-    return
   end
 
   private

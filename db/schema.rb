@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141210023917) do
+ActiveRecord::Schema.define(version: 20141210065334) do
 
   create_table "payments", force: true do |t|
     t.string   "number"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20141210023917) do
     t.string   "verification_value"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "status",             default: 0, null: false
   end
 
 end
