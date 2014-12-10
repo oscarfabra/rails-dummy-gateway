@@ -12,15 +12,15 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :number %><br>
+    <%= f.label :number, 'Credit Card Number' %><br>
     <%= f.text_field :number %>
   </div>
   <div class="field">
-    <%= f.label :month %><br>
+    <%= f.label :month, 'Expiration Month:' %><br>
     <%= f.text_field :month %>
   </div>
   <div class="field">
-    <%= f.label :year %><br>
+    <%= f.label :year, 'Expiration Year:' %><br>
     <%= f.text_field :year %>
   </div>
   <div class="field">
@@ -36,6 +36,6 @@
     <%= f.text_field :verification_value %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit "Make Payment" %>
   </div>
 <% end %>

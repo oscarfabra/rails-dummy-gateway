@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :payments
 
-  root 'payment#new', as: 'pay' # Use pay_path as root url
+  root 'payments#new', as: 'pay' # Use pay_path as root url
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

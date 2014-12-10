@@ -19,6 +19,8 @@ class PaymentsController < ApplicationController
 
   # GET /payments/1/edit
   def edit
+    redirect_to pay_path, notice: "Can't edit a payment that is already done."
+    return
   end
 
   # POST /payments
@@ -26,9 +28,14 @@ class PaymentsController < ApplicationController
   def create
     @payment = Payment.new(payment_params)
 
+    unless @payment.process
+      redirect_to pay_path, notice: 'Credit Card Validation Failed.'
+      return
+    end
+
     respond_to do |format|
       if @payment.save
-        format.html { redirect_to @payment, notice: 'Payment was successfully created.' }
+        format.html { redirect_to @payment, notice: 'Payment was successfully done.' }
         format.json { render :show, status: :created, location: @payment }
       else
         format.html { render :new }
@@ -40,25 +47,15 @@ class PaymentsController < ApplicationController
   # PATCH/PUT /payments/1
   # PATCH/PUT /payments/1.json
   def update
-    respond_to do |format|
-      if @payment.update(payment_params)
-        format.html { redirect_to @payment, notice: 'Payment was successfully updated.' }
-        format.json { render :show, status: :ok, location: @payment }
-      else
-        format.html { render :edit }
-        format.json { render json: @payment.errors, status: :unprocessable_entity }
-      end
-    end
+    redirect_to pay_path, notice: "Can't update a payment."
+    return
   end
 
   # DELETE /payments/1
   # DELETE /payments/1.json
   def destroy
-    @payment.destroy
-    respond_to do |format|
-      format.html { redirect_to payments_url, notice: 'Payment was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    redirect_to pay_path, notice: "Can't destroy a payment."
+    return
   end
 
   private
