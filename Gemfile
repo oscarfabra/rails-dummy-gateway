@@ -19,6 +19,14 @@ gem 'activemerchant', '~> 1.31'
 gem 'haml', '~> 4.0'
 gem 'kaminari', '~> 0.14'
 
+# Rest_Client for HTTP requests between web apps.
+gem 'rest_client', '~> 1.7.2'
+
+# Rest_Client dependencies
+gem 'mime-types', '~> 2.4.3'
+gem 'netrc', '~> 0.7.7'
+gem 'rdoc', '~> 4.2.0'
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks

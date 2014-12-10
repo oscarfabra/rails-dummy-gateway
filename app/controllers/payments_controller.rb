@@ -30,9 +30,20 @@ class PaymentsController < ApplicationController
 
     respond_to do |format|
       if @payment.errors.empty? and @payment.save and @payment.process(params[:payment][:amount])
+        notice = 'Payment was successfully done.'
+
+        # Sends orders details in json format back to the store.
+        RestClient.post "http://localhost:3000/orders", { :notice => notice }.to_json,
+                        :content_type => :json, :accept => :json
+
         format.html { redirect_to @payment, notice: 'Payment was successfully done.' }
         format.json { render :show, status: :created, location: @payment }
       else
+
+        # Sends orders details in json format back to the store.
+        RestClient.post "http://localhost:3000/orders", { :notice => notice }.to_json,
+                        :content_type => :json, :accept => :json
+
         format.html { redirect_to pay_path, notice: 'Credit card validation failed.'}
         format.json { render json: @payment.errors, status: :unprocessable_entity }
       end

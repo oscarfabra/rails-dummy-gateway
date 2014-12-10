@@ -1,5 +1,17 @@
 Rails.application.routes.draw do
+  get 'order_reader/new'
+
+  get 'order_reader/create'
+
+  get 'order_reader/destroy'
+
   resources :payments
+
+  controller :order_reader do
+    get 'read_order' => :new
+    post 'read_order' => :create
+    delete 'forget_order' => :destroy
+  end
 
   root 'payments#new', as: 'pay' # Use pay_path as root url
 
