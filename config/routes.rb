@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+
+  root 'payments#new', as: 'pay' # Use pay_path as root url for get.
+
+  post '/' => 'payments#new'  # Use pay_path as root url for post.
+
   get 'order_reader/new'
 
   get 'order_reader/create'
@@ -12,8 +17,6 @@ Rails.application.routes.draw do
     post 'read_order' => :create
     delete 'forget_order' => :destroy
   end
-
-  root 'payments#new', as: 'pay' # Use pay_path as root url
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

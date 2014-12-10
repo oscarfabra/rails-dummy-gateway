@@ -1,6 +1,10 @@
 require 'rest_client'
 
 class OrderReaderController < ApplicationController
+
+  protect_from_forgery with: :null_session,
+                       if: Proc.new { |c| c.request.format.json? }
+
   # GET /read_order
   # GET /read_order.json
   def new
@@ -10,19 +14,27 @@ class OrderReaderController < ApplicationController
   # POST /read_order
   # POST /read_order.json
   def create
-    # @product = Product.new(product_params)
-
     logger.info "Received data #{params}"
 
-    # TODO: Process data.
+    # Saves params into session for later retrieval.
+    session[:total] = params[:total]
+    session[:customer_id] = params[:customer_id]
+    session[:order_no] = params[:order_no]
+    session[:address] = params[:address]
+    session[:email] = params[:email]
+    session[:pay_type] = params[:pay_type]
 
     respond_to do |format|
-      if @product.save
-        format.html { redirect_to pay_path, notice: 'Product was successfully created.' }
-        format.json { render :show, status: :created, location: @product }
+      if params
+        format.html { redirect_to pay_path }
+        format.json do  # render an html page instead of a JSON response.
+          render '/payments/new.html',
+                 { :content_type => 'text/html',
+                   :layout       => 'application' }
+        end
       else
-        format.html { render :new }
-        format.json { render json: @product.errors, status: :unprocessable_entity }
+        format.html { render '/payments/new.html' }
+        format.json { render json: params, status: :unprocessable_entity }
       end
     end
   end

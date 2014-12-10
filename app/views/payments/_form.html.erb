@@ -35,7 +35,7 @@
     <%= f.label :verification_value %><br>
     <%= f.text_field :verification_value %>
   </div>
-  <%= f.hidden_field :amount, { value: 100 } %>
+  <%= f.hidden_field :amount, { value: session[:total] } %>
   <div class="actions">
     <%= f.submit "Make Payment" %>
   </div>

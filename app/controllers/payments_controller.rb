@@ -1,4 +1,8 @@
 class PaymentsController < ApplicationController
+
+  protect_from_forgery with: :null_session,
+                       if: Proc.new { |c| c.request.format.json? }
+
   before_action :set_payment, only: [:show, :edit, :update, :destroy]
 
   # GET /payments
@@ -16,6 +20,7 @@ class PaymentsController < ApplicationController
   # GET /payments/new
   def new
     @payment = Payment.new
+    # session[:total] = 100  # Test data
   end
 
   # GET /payments/1/edit
@@ -39,7 +44,6 @@ class PaymentsController < ApplicationController
         format.html { redirect_to @payment, notice: 'Payment was successfully done.' }
         format.json { render :show, status: :created, location: @payment }
       else
-
         # Sends orders details in json format back to the store.
         RestClient.post "http://localhost:3000/orders", { :notice => notice }.to_json,
                         :content_type => :json, :accept => :json
