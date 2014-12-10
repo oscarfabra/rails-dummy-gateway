@@ -26,14 +26,12 @@ class OrderReaderController < ApplicationController
 
     respond_to do |format|
       if params
-        format.html { redirect_to pay_path }
+        format.html { redirect_to '/payments/new.html' }
         format.json do  # render an html page instead of a JSON response.
-          render '/payments/new.html',
-                 { :content_type => 'text/html',
-                   :layout       => 'application' }
+          redirect_to '/payments/new.html'
         end
       else
-        format.html { render '/payments/new.html' }
+        format.html { redirect_to '/payments/new.html' }
         format.json { render json: params, status: :unprocessable_entity }
       end
     end

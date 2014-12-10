@@ -54,6 +54,34 @@ class PaymentsController < ApplicationController
     end
   end
 
+  # POST /read_order
+  # POST /read_order.json
+  # def purchase
+  #   logger.info '*' * 80
+  #   logger.info "Received data: #{params}"
+  #   logger.info '*' * 80
+  #
+  #   # Saves params into session for later retrieval.
+  #   session[:total] = params[:total]
+  #   session[:customer_id] = params[:customer_id]
+  #   session[:order_no] = params[:order_no]
+  #   session[:address] = params[:address]
+  #   session[:email] = params[:email]
+  #   session[:pay_type] = params[:pay_type]
+  #
+  #   respond_to do |format|
+  #     if params
+  #       format.html { redirect_to '/payments/new.html' }
+  #       format.json do  # render an html page instead of a JSON response.
+  #         redirect_to '/payments/new.html'
+  #       end
+  #     else
+  #       format.html { redirect_to '/payments/new.html' }
+  #       format.json { render json: params, status: :unprocessable_entity }
+  #     end
+  #   end
+  # end
+
   # PATCH/PUT /payments/1
   # PATCH/PUT /payments/1.json
   def update
