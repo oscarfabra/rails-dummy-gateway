@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  number: MyString
+  month: MyString
+  year: MyString
+  first_name: MyString
+  last_name: MyString
+  verification_value: MyString
+
+two:
+  number: MyString
+  month: MyString
+  year: MyString
+  first_name: MyString
+  last_name: MyString
+  verification_value: MyString
