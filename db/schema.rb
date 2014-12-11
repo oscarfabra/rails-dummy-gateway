@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141211011547) do
+ActiveRecord::Schema.define(version: 20141211183450) do
 
   create_table "orders", force: true do |t|
     t.text     "address"
@@ -35,8 +35,9 @@ ActiveRecord::Schema.define(version: 20141211011547) do
     t.string   "verification_value"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "status",             default: 0, null: false
+    t.integer  "status",                                     default: 0,   null: false
     t.integer  "order_id"
+    t.decimal  "amount",             precision: 8, scale: 2, default: 0.0, null: false
   end
 
   add_index "payments", ["order_id"], name: "index_payments_on_order_id"

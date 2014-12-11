@@ -2,7 +2,7 @@ class Payment < ActiveRecord::Base
   belongs_to :order
 
   validates :number, :month, :year, :first_name, :last_name,
-            :verification_value, presence: true
+            :verification_value, :order_id, :amount, presence: true
 
   # Processes this payment. Returns true or false depending on result.
   def process(amount)

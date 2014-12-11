@@ -87,6 +87,7 @@ class PaymentsController < ApplicationController
                                       :year,
                                       :first_name,
                                       :last_name,
-                                      :verification_value)
+                                      :verification_value,
+                                      :amount)
     end
 end
