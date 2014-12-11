@@ -1,31 +1,19 @@
 <h2>Purchase details</h2>
-
 <p>
-  <strong>Order No:</strong>
-  <%= session[:order_no] %>
+  <strong>Order No:</strong>&nbsp;<%= order.order_no %>
 </p>
-
 <p>
-  <strong>Customer ID:</strong>
-  <%= session[:customer_id] %>
+  <strong>Customer ID:</strong>&nbsp;<%= order.customer_id %>
 </p>
-
 <p>
-  <strong>Customer E-mail:</strong>
-  <%= session[:email] %>
+  <strong>E-mail:</strong>&nbsp;<%= order.email %>
 </p>
-
 <p>
-  <strong>Billing Address:</strong>
-  <%= session[:address] %>
+  <strong>Address:</strong>&nbsp;<%= order.address %>
 </p>
-
 <p>
-  <strong>Total:</strong>
-  <%= session[:total] %>
+  <strong>Total:</strong>&nbsp;<%= order.total %>
 </p>
-
 <p>
-  <strong>Payment Type:</strong>
-  <%= session[:pay_type] %>
+  <strong>Payment Type:</strong>&nbsp;<%= order.pay_type %>
 </p>

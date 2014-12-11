@@ -4,9 +4,9 @@ module CurrentOrder
   private
 
     def set_order
-      @order = Order.find(session[:order_id])
-    rescue ActiveRecord::RecordNotFound
-      @order = Order.create
+      # Assumes that order to process is the last one in the db.
+      # Should add constraints to avoid concurrency issues.
+      @order = Order.last
       session[:order_id] = @order.id
     end
 end

@@ -15,9 +15,10 @@ class OrderReaderController < ApplicationController
   # POST /read_order.json
   def create
     logger.info "Received data: #{params}"
+    logger.info "order_reader hash: #{params[:order_reader]}"
 
-    # Saves params into session for later retrieval.
-    @order = Order.new(params[:order_reader])
+    # Creates a new order for later retrieval.
+    order = Order.new(order_reader_params)
 
     respond_to do |format|
       if order.save!
@@ -37,4 +38,17 @@ class OrderReaderController < ApplicationController
   # DELETE /forget_order/1.json
   def destroy
   end
+
+  private
+
+    # Only allow the white list through.
+    def order_reader_params
+      params.require(:order_reader).permit(:total,
+                                    :customer_id,
+                                    :order_no,
+                                    :address,
+                                    :email,
+                                    :pay_type)
+    end
+
 end
