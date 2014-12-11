@@ -14,18 +14,14 @@ class OrderReaderController < ApplicationController
   # POST /read_order
   # POST /read_order.json
   def create
-    logger.info "Received data #{params}"
+    logger.info "Received data: #{params}"
 
     # Saves params into session for later retrieval.
-    session[:total] = params[:total]
-    session[:customer_id] = params[:customer_id]
-    session[:order_no] = params[:order_no]
-    session[:address] = params[:address]
-    session[:email] = params[:email]
-    session[:pay_type] = params[:pay_type]
+    @order = Order.new(params[:order_reader])
 
     respond_to do |format|
-      if params
+      if order.save!
+        session[:order_id] = order.id
         format.html { redirect_to '/payments/new.html' }
         format.json do  # render an html page instead of a JSON response.
           redirect_to '/payments/new.html'

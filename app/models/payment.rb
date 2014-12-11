@@ -1,4 +1,6 @@
 class Payment < ActiveRecord::Base
+  belongs_to :order
+
   validates :number, :month, :year, :first_name, :last_name,
             :verification_value, presence: true
 

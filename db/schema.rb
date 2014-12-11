@@ -11,7 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141210065334) do
+ActiveRecord::Schema.define(version: 20141211011547) do
+
+  create_table "orders", force: true do |t|
+    t.text     "address"
+    t.string   "email"
+    t.string   "pay_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "payment_type_id"
+    t.datetime "ship_date"
+    t.string   "order_no",                                default: "O0000001", null: false
+    t.integer  "customer_id",                             default: 1,          null: false
+    t.decimal  "total",           precision: 8, scale: 2, default: 0.0,        null: false
+  end
 
   create_table "payments", force: true do |t|
     t.string   "number"
@@ -23,6 +36,9 @@ ActiveRecord::Schema.define(version: 20141210065334) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "status",             default: 0, null: false
+    t.integer  "order_id"
   end
+
+  add_index "payments", ["order_id"], name: "index_payments_on_order_id"
 
 end
