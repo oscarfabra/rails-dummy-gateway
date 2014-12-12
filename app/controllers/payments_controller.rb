@@ -2,16 +2,16 @@ class PaymentsController < ApplicationController
 
   include CurrentOrder
   before_action :set_order, only: [:new, :create, :show]
+  before_action :set_payment, only: [:show, :edit, :update, :destroy]
+
   protect_from_forgery with: :null_session,
                        if: Proc.new { |c| c.request.format.json? }
-
-  before_action :set_payment, only: [:show, :edit, :update, :destroy]
 
   # GET /payments
   # GET /payments.json
   def index
     @payments = Payment.all
-    redirect_to pay_path, notice: "Can't view all payments."
+    redirect_to pay_path, notice: "Can't view payments."
   end
 
   # GET /payments/1
@@ -25,6 +25,8 @@ class PaymentsController < ApplicationController
     @payment = Payment.new
     @payment.order = @order
     @payment.order_id = @order.id
+    # Assumes order payment will be made all at once.
+    @payment.amount = @order.total
   end
 
   # GET /payments/1/edit
@@ -36,9 +38,14 @@ class PaymentsController < ApplicationController
   # POST /payments.json
   def create
     @payment = Payment.new(payment_params)
+    logger.info "Attributes about to be saved: #{@payment.attributes}"
+    logger.info "amount = #{@payment.amount}"
 
     respond_to do |format|
-      if @payment.errors.empty? and @payment.save and @payment.process(params[:payment][:amount])
+      if @payment.paid?
+        format.html { redirect_to pay_path, notice: 'This ordered has already been paid.'}
+        format.json { render json: @payment.errors, status: :unprocessable_entity }
+      elsif @payment.errors.empty? and @payment.save! and @payment.process
 
         # Sends orders details in json format back to the store.
         RestClient.post "http://localhost:3000/orders",
@@ -80,7 +87,7 @@ class PaymentsController < ApplicationController
       @payment = Payment.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
+    # Only allow the white list through.
     def payment_params
       params.require(:payment).permit(:number,
                                       :month,
@@ -88,6 +95,8 @@ class PaymentsController < ApplicationController
                                       :first_name,
                                       :last_name,
                                       :verification_value,
+                                      :status,
+                                      :order_id,
                                       :amount)
     end
 end

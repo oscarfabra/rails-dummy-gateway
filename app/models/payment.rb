@@ -1,11 +1,17 @@
 class Payment < ActiveRecord::Base
   belongs_to :order
 
+  # Hash with the possible statuses retrieved from payment_statuses table.
+  PAYMENT_STATUSES = PaymentStatus.select(:id).map(&:id)
+  PENDING_STATUS = 1
+  PAID_STATUS = 9
+
   validates :number, :month, :year, :first_name, :last_name,
-            :verification_value, :order_id, :amount, presence: true
+            :verification_value, :status, :order_id, :amount, presence: true
+  validates :status, inclusion: PAYMENT_STATUSES
 
   # Processes this payment. Returns true or false depending on result.
-  def process(amount)
+  def process
     random_number = 1 + rand(10) # Generates a random number between 1 and 10
     return false if random_number == 1  # Rejects if random_number is 1 (10% of the time)
 
@@ -17,7 +23,7 @@ class Payment < ActiveRecord::Base
         :password => 'password')
 
     # ActiveMerchant accepts all amounts as Integer values in cents
-    amount = amount * 10
+    amount = self.amount * 10
 
     # Processes payment with ActiveMerchant.
     credit_card = ActiveMerchant::Billing::CreditCard.new(
@@ -43,9 +49,17 @@ class Payment < ActiveRecord::Base
         result = false
       end
     end
-    @status = (result)? 1 : 9  # Updates status to 1 (success) or 9 (failed) accordingly
+    # Updates status to 1 (success) or 9 (failed) accordingly
+    # @status = (result)? PAID_STATUS : PENDING_STATUS
+    @status = PAID_STATUS  # Sets to true for testing purposes.
     save!  # Updates this payment in db.
+    logger.info "Payment attributes = #{self.attributes}"
     return true  # Returns true, for testing purposes.
     #result
+  end
+
+  # Tells whether this order has already been paid.
+  def paid?
+    @status == PAID_STATUS
   end
 end

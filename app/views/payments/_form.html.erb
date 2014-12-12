@@ -35,7 +35,9 @@
     <%= f.label :verification_value %><br>
     <%= f.text_field :verification_value %>
   </div>
-  <%= f.hidden_field :amount, { value: :amount } %>
+  <%= f.hidden_field :status, { value: @payment.status } %>
+  <%= f.hidden_field :order_id, { value: @payment.order_id } %>
+  <%= f.hidden_field :amount, { value: @payment.amount } %>
   <div class="actions">
     <%= f.submit "Make Payment" %>
   </div>
