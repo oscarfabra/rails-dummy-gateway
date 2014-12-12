@@ -43,7 +43,7 @@ class PaymentsController < ApplicationController
 
     respond_to do |format|
       if @payment.paid?
-        format.html { redirect_to pay_path, notice: 'This ordered has already been paid.'}
+        format.html { redirect_to pay_path, notice: 'This order has already been paid.'}
         format.json { render json: @payment.errors, status: :unprocessable_entity }
       elsif @payment.errors.empty? and @payment.save! and @payment.process
 

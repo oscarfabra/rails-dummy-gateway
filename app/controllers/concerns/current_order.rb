@@ -7,9 +7,10 @@ module CurrentOrder
       # Assumes that order to process is the last one in the db.
       # Should add constraints to avoid concurrency issues.
       @order = Order.last
-    rescue ActiveRecord::RecordNotFound
-      @order = Order.create
-      logger.info "New order object: #{@order}"
+      unless @order
+        @order = Order.create
+        logger.info "New order object id: #{@order.id}"
+      end
       session[:order_id] = @order.id
     end
 end

@@ -4,21 +4,11 @@ Rails.application.routes.draw do
 
   post '/' => 'payments#new'  # Use pay_path as root url for post.
 
-  # post 'purchase' => 'payments#purchase'
-
-  post 'payments/new' => 'payments#new'
-
-  get 'order_reader/new'
-
-  get 'order_reader/create'
-
-  get 'order_reader/destroy'
-
   resources :payments
 
-  controller :order_reader do
+  controller :orders_proxy do
     get 'read_order' => :new
-    post 'read_order' => :create
+    post 'read_order' => :read_order
     delete 'forget_order' => :destroy
   end
 
