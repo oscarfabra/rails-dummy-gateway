@@ -1,6 +1,6 @@
 require 'rest_client'
 
-class OrdersProxyController < ApplicationController
+class PaymentsServerController < ApplicationController
 
   protect_from_forgery with: :null_session,
                        if: Proc.new { |c| c.request.format.json? }
@@ -15,7 +15,7 @@ class OrdersProxyController < ApplicationController
   # POST /read_order.json
   def read_order
     logger.info "Received data: #{params}"
-    logger.info "orders_proxy hash: #{params[:orders_proxy]}"
+    logger.info "payments_server hash: #{params[:payments_server]}"
 
     # Creates a new order for later retrieval.
     order = Order.new(order_reader_params)
@@ -34,16 +34,11 @@ class OrdersProxyController < ApplicationController
     end
   end
 
-  # DELETE /forget_order/1
-  # DELETE /forget_order/1.json
-  def destroy
-  end
-
   private
 
     # Only allow the white list through.
     def order_reader_params
-      params.require(:orders_proxy).permit(:total,
+      params.require(:payments_server).permit(:total,
                                     :customer_id,
                                     :order_no,
                                     :address,

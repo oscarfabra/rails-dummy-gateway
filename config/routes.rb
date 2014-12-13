@@ -4,12 +4,15 @@ Rails.application.routes.draw do
 
   post '/' => 'payments#new'  # Use pay_path as root url for post.
 
+  # post 'purchase' => 'payments#purchase'
+
+  post 'payments/new' => 'payments#new'  # Route for PaymentsServerController.
+
   resources :payments
 
-  controller :orders_proxy do
+  controller :payments_server do
     get 'read_order' => :new
     post 'read_order' => :read_order
-    delete 'forget_order' => :destroy
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
