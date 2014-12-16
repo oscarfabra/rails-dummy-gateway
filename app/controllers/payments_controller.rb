@@ -1,6 +1,7 @@
 class PaymentsController < ApplicationController
 
   include CurrentOrder
+  include CurrentClient
   before_action :set_order, only: [:new, :create, :show]
   before_action :set_payment, only: [:show, :edit, :update, :destroy]
 
@@ -39,7 +40,7 @@ class PaymentsController < ApplicationController
   def create
     @payment = Payment.new(payment_params)
     logger.info "Attributes about to be saved: #{@payment.attributes}"
-    logger.info "amount = #{@payment.amount}"
+    logger.info "Amount = #{@payment.amount}"
 
     respond_to do |format|
       if @payment.paid?
@@ -47,24 +48,19 @@ class PaymentsController < ApplicationController
         format.json { render json: @payment.errors, status: :unprocessable_entity }
       elsif @payment.errors.empty? and @payment.save! and @payment.process
 
-        # Sends orders details in json format back to the store.
-        RestClient.post "http://localhost:3000/orders",
-                        { notice: 'Payment was successfully done.' }.to_json,
-                        :content_type => :json, :accept => :json
+        # Sends order details in json format back to the store.
+        send_response('Payment was successfully done.', :json)
 
         # format.html { redirect_to @payment, notice: 'Payment was successfully done.' }
         # format.json { render :show, status: :created, location: @payment }
+      elsif @payment.errors.empty?
+          
+        # Sends order details in json format back to the store.
+        send_response('Credit card validation failed.', :json)
+          
       else
-        if @payment.errors.empty?
-          # Sends orders details in json format back to the store.
-          RestClient.post "http://localhost:3000/orders",
-                          { notice: 'Credit card validation failed.' }.to_json,
-                          :content_type => :json,
-                          :accept => :json
-        else
           format.html { redirect_to pay_path, notice: 'Credit card validation failed.'}
           format.json { render json: @payment.errors, status: :unprocessable_entity }
-        end
       end
     end
   end
