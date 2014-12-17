@@ -2,6 +2,8 @@ require 'rest_client'
 
 class PaymentsServerController < ApplicationController
 
+  include CurrentClient  # Used to know which client to serve.
+
   protect_from_forgery with: :null_session,
                        if: Proc.new { |c| c.request.format.json? }
 
@@ -14,7 +16,7 @@ class PaymentsServerController < ApplicationController
   # POST /read_order
   # POST /read_order.json
   def read_order
-    # TODO: Should update to handle multiple Client requests
+    # TODO: Should update to handle multiple Client requests.
     logger.info "Received data: #{params}"
     logger.info "payments_server hash: #{params[:payments_server]}"
 
@@ -33,6 +35,12 @@ class PaymentsServerController < ApplicationController
         format.json { render json: params, status: :unprocessable_entity }
       end
     end
+  end
+
+  # GET /send_response
+  def send_response
+    # Redirects to client waiting for the answer.
+    redirect_to CurrentClient::RESPONSE_URL
   end
 
   private

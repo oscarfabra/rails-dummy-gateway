@@ -58,8 +58,9 @@ class Payment < ActiveRecord::Base
     #result
   end
 
-  # Tells whether this order has already been paid.
+  # Tells whether this order has already been paid. Assumes order was paid in
+  # just one payment.
   def paid?
-    @status == PAID_STATUS
+    Payment.find_by(order_id: params[:order_id])
   end
 end

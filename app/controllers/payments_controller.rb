@@ -38,29 +38,39 @@ class PaymentsController < ApplicationController
   # POST /payments
   # POST /payments.json
   def create
-    @payment = Payment.new(payment_params)
-    logger.info "Attributes about to be saved: #{@payment.attributes}"
-    logger.info "Amount = #{@payment.amount}"
 
     respond_to do |format|
-      if @payment.paid?
+
+      # Searches for payment.
+      @payment = Payment.find_by(order_id: params[:order_id])
+      if !@payment.nil?
         format.html { redirect_to pay_path, notice: 'This order has already been paid.'}
         format.json { render json: @payment.errors, status: :unprocessable_entity }
-      elsif @payment.errors.empty? and @payment.save! and @payment.process
+      end
+
+      # Processes a new payment.
+      @payment = Payment.new(payment_params)
+      logger.info "Attributes about to be saved: #{@payment.attributes}"
+      logger.info "Amount = #{@payment.amount}"
+      logger.info "Errors = #{@payment.errors.count}"
+
+      if @payment.errors
+      
+        format.html { redirect_to pay_path, notice: 'Credit card validation failed.'}
+        format.json { render json: @payment.errors, status: :unprocessable_entity }
+      
+      elsif @payment.save! and @payment.process
 
         # Sends order details in json format back to the store.
-        send_response('Payment was successfully done.', :json)
+        send_response('SUCCESS', :json)
 
         # format.html { redirect_to @payment, notice: 'Payment was successfully done.' }
         # format.json { render :show, status: :created, location: @payment }
-      elsif @payment.errors.empty?
-          
-        # Sends order details in json format back to the store.
-        send_response('Credit card validation failed.', :json)
-          
       else
-          format.html { redirect_to pay_path, notice: 'Credit card validation failed.'}
-          format.json { render json: @payment.errors, status: :unprocessable_entity }
+
+        # Sends order details in json format back to the store.
+        send_response('FAIL', :json)
+        # redirect_to controller: 'PaymentsServer', action: 'send_response'
       end
     end
   end

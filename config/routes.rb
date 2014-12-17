@@ -9,10 +9,11 @@ Rails.application.routes.draw do
   post 'payments/new' => 'payments#new'  # Route for PaymentsServerController.
 
   resources :payments
-
+  
   controller :payments_server do
     get 'read_order' => :new
     post 'read_order' => :read_order
+    get 'send_response' => :send_response 
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
