@@ -43,13 +43,16 @@ class PaymentsController < ApplicationController
 
       # Validates pre-condition order data.
       payment = params[:payment]  # Stores payment hash.
-      if payment[:order_id].size == 0 || payment[:amount] == 0.0
+      logger.info "payment = #{payment}"
+      logger.info "payment['order_id'] = #{payment['order_id']}"
+      if payment['order_id'].size == 0 || payment['amount'] == 0.0
         logger.info "No order to pay. About to redirect..."
         redirect_to pay_path, notice: 'No order to pay.' and return
       end
 
       # Searches for payment.
-      @payment = Payment.find_by(order_id: payment[:order_id])
+      @payment = Payment.find_by(order_id: payment['order_id'])
+      logger.info "@payment = #{@payment}"
       if !@payment.nil?
         redirect_to pay_path, notice: 'This order has already been paid.' and return
       end
@@ -60,14 +63,17 @@ class PaymentsController < ApplicationController
       logger.info "Amount = #{@payment.amount}"
       logger.info "Errors = #{@payment.errors.count}"
 
-      if @payment.errors.count > 0
+      if !@payment.valid? || @payment.errors.count > 0
         redirect_to pay_path,
                     notice: 'Credit card validation failed. Please check your details.' and return
 
-      elsif @payment.valid? and @payment.save! and @payment.process
+      elsif @payment.save! and @payment.process
 
         # Sends order details in json format back to the store.
         send_response('SUCCESS', :json)
+
+        # redirect_to redirect_url,
+        #             notice: 'Payment was successfully made.' and return
 
         # format.html { redirect_to @payment, notice: 'Payment was successfully done.' }
         # format.json { render :show, status: :created, location: @payment }
@@ -75,6 +81,9 @@ class PaymentsController < ApplicationController
 
         # Sends order details in json format back to the store.
         send_response('FAIL', :json)
+
+        # redirect_to redirect_url,
+        #             notice: "Payment couldn't be made." and return
         # redirect_to controller: 'PaymentsServer', action: 'send_response'
       end
     end
