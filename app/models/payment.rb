@@ -8,6 +8,8 @@ class Payment < ActiveRecord::Base
 
   validates :number, :month, :year, :first_name, :last_name,
             :verification_value, :status, :order_id, :amount, presence: true
+  validates :amount, numericality: { greater_than_or_equal_to: 0.01,
+                                    less_than_or_equal_to: 10000 }
   validates :status, inclusion: PAYMENT_STATUSES
 
   # Processes this payment. Returns true or false depending on result.

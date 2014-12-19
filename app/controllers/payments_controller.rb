@@ -41,11 +41,17 @@ class PaymentsController < ApplicationController
 
     respond_to do |format|
 
+      # Validates pre-condition order data.
+      payment = params[:payment]  # Stores payment hash.
+      if payment[:order_id].size == 0 || payment[:amount] == 0.0
+        logger.info "No order to pay. About to redirect..."
+        redirect_to pay_path, notice: 'No order to pay.' and return
+      end
+
       # Searches for payment.
-      @payment = Payment.find_by(order_id: params[:order_id])
+      @payment = Payment.find_by(order_id: payment[:order_id])
       if !@payment.nil?
-        format.html { redirect_to pay_path, notice: 'This order has already been paid.'}
-        format.json { render json: @payment.errors, status: :unprocessable_entity }
+        redirect_to pay_path, notice: 'This order has already been paid.' and return
       end
 
       # Processes a new payment.
@@ -54,12 +60,11 @@ class PaymentsController < ApplicationController
       logger.info "Amount = #{@payment.amount}"
       logger.info "Errors = #{@payment.errors.count}"
 
-      if @payment.errors
-      
-        format.html { redirect_to pay_path, notice: 'Credit card validation failed.'}
-        format.json { render json: @payment.errors, status: :unprocessable_entity }
-      
-      elsif @payment.save! and @payment.process
+      if @payment.errors.count > 0
+        redirect_to pay_path,
+                    notice: 'Credit card validation failed. Please check your details.' and return
+
+      elsif @payment.valid? and @payment.save! and @payment.process
 
         # Sends order details in json format back to the store.
         send_response('SUCCESS', :json)

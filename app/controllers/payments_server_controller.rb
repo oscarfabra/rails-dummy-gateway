@@ -16,7 +16,7 @@ class PaymentsServerController < ApplicationController
   # POST /read_order
   # POST /read_order.json
   def read_order
-    # TODO: Should update to handle multiple Client requests.
+    # TODO: Should update to handle multiple Client requests simultaneously.
     logger.info "Received data: #{params}"
     logger.info "payments_server hash: #{params[:payments_server]}"
 
